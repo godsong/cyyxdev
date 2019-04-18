@@ -1,0 +1,56 @@
+<?xml version="1.0"?>
+<odoo>
+    <record id="view_form_work" model="ir.ui.view">
+        <field name="name">work Form</field>
+        <field name="model">cyyx.work</field>
+        <field name="arch" type="xml">
+            <form string="周报">
+                <header>
+
+                </header>
+                <group>
+                    <group name="group_left">
+                        <field name="name" />
+                        <field name="person_id"/>
+                        <field name="department_id" />
+                        <field name="date_start" />
+                    </group>
+                    <group name="group_right">
+                        <field name="active" />
+                        <field name="image" widget="image" />
+                    </group>
+
+                </group>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_tree_work" model="ir.ui.view">
+        <field name="name">周报列表</field>
+        <field name="model">cyyx.work</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name" />
+                <field name="person_ids" widget="many2many_tags" />
+                <field name="department_id" />
+                <field name="date_start" />
+            </tree>
+        </field>
+    </record>
+
+        <record id="view_search_work" model="ir.ui.view">
+        <field name="name">周报过滤</field>
+        <field name="model">cyyx.work</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="publisher_id" />
+                <filter name="filter_active"
+                    string="Active"
+                    domain="[('active','=',True)]" />
+               <filter name="filter_inactive"
+                    string="Inactive"
+                    domain="[('active','=',False)]" />
+            </search>
+        </field>
+    </record>
+</odoo>

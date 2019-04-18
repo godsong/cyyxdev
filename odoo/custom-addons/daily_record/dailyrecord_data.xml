@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<odoo>
+    <data noupdate="0">
+
+        <!-- daily_record-related subtypes for messaging / Chatter -->
+        <record id="mt_daily_draft" model="mail.message.subtype">
+            <field name="name">已创建</field>
+            <field name="res_model">daily.record</field>
+            <field name="description">日志已创建</field>
+        </record>
+        <record id="mt_daily_confirm" model="mail.message.subtype">
+            <field name="name">已锁定</field>
+            <field name="res_model">daily.record</field>
+            <field name="description">日志已锁定</field>
+        </record>
+
+    </data>
+</odoo>

@@ -1,0 +1,365 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<data>
+		<!-- views form -->
+		<record id="daily_record_form" model="ir.ui.view">
+			<field name="name">daily.record.form</field>
+			<field name="model">daily.record</field>
+			<field name="type">form</field>
+			<field name="priority">3</field>
+			<field name="arch" type="xml">
+				<form string="我的工作日志" version="7.0">
+					<header>
+						<button name="add_all_option" string="导入本日工作" type="object" class="oe_highlight"/>
+					</header>
+					<sheet>
+						<h1>
+							<field name="name"
+								attrs="{'invisible':[('name','=', False)],'readonly':[('state','=', 'confirm')]}"
+								on_change="onchange_des(isadd,daily_date,employee_id)" />
+						</h1>
+						<group>
+							<group>
+								<field name="employee_id" />
+								<field name="isadd" attrs="{'readonly':[('state','=', 'confirm')]}"
+									on_change="onchange_des(isadd,daily_date,employee_id)" />
+								<field name="state" invisible="1" />
+								<field name="daily_date"
+									attrs="{'invisible':[('isadd','=', False)],'readonly':[('state','=', 'confirm')]}"
+									on_change="onchange_des(isadd,daily_date,employee_id)" />
+							</group>
+							<group>
+								<field name="department_id" />
+								<field name="create_date" />
+								<field name="create_uid" invisible="1" />
+							</group>
+						</group>
+						<group name="hz_option">
+						</group>
+						<group attrs="{'invisible':[('state','=', 'draft')]}">
+								<div>
+								<separator string="计划汇总"/>
+									<field name="bw_all" options="{'reload_on_button': true}">
+										<tree editable="top">
+											<field name="name" string="未完计划汇总" />
+											<field name="start_date" string="预计开始期" />
+											<field name="end_date" string="预计结束期" />
+											<field name="priority" string="紧急程度" />
+											<field name="progress" />
+											<field name="type" />
+											<button name="done" icon="STOCK_CONVERT" string="完成此项" type="object" />
+										</tree>
+									</field>
+								</div>
+							</group>
+								<div>
+									<separator string="工作总结"/>
+									<field name="description" placeholder="工作总结" widget="html" autofocus="autofocus"/>
+								</div>
+								<separator string="工作记录汇总"/>
+								<field name="work_ids" context="{'default_type': '0'}" options="{'reload_on_button': true}">
+									<tree string="工作摘要" editable="top">
+										<field name="name" />
+										<field name="hours" widget="float_time" sum="hours"/>
+										<field name="date" />
+										<field name="user_id" invisible="1" />
+										<field name="type" />
+										<button name="done_history" icon="gtk-indent" string="历史情况" type="object" 
+												attrs="{'invisible':[('type','not in', ['9','12'])]}"/>
+									</tree>
+								</field>
+								<group>
+									<div>
+									<separator string="今日未完工作"/>
+										<field name="bwork_ids" context="{'default_type': '8'}">
+											<tree string="工作摘要" editable="top">
+												<field name="name" string="计划内容" />
+												<field name="start_date" string="预计开始期" />
+												<field name="end_date" string="预计结束期" />
+												<field name="priority" string="紧急程度" />
+												<field name="type" invisible="1"/>
+											</tree>
+										</field>
+									</div>
+								</group>
+						<div class="oe_chatter">
+							<field name="message_follower_ids" widget="mail_followers" />
+							<field name="message_ids" widget="mail_thread" />
+						</div>
+					</sheet>
+				</form>
+			</field>
+		</record>
+
+		<!--工作日志 views tree -->
+		<record id="daily_record_tree" model="ir.ui.view">
+			<field name="name">daily.record.tree</field>
+			<field name="model">daily.record</field>
+			<field name="type">tree</field>
+			<field name="priority">2</field>
+			<field name="arch" type="xml">
+				<tree string="我的工作日志">
+					<field name="name" />
+					<field name="create_uid" invisible="context.get('create_uid',False)"/>
+					<field name="create_date" />
+					<field name="daily_date" />
+					<field name="department_id" />
+				</tree>
+			</field>
+		</record>
+		
+		<!--工作计划 views tree -->
+		<record id="work_plan_tree" model="ir.ui.view">
+			<field name="name">work.plan.tree</field>
+			<field name="model">daily.record.mx</field>
+			<field name="type">tree</field>
+			<field name="priority">1</field>
+			<field name="arch" type="xml">
+				<tree string="我的工作计划" editable="top">
+					<field name="name" string="工作计划" on_change="onchange_type(name)"/>
+					<field name="start_date" required="1"/>
+					<field name="end_date" required="1"/>
+					<field name="progress" required="1"/>
+					<field name="priority" required="1"/>
+					<field name="create_date" readonly="1"/>
+					<field name="date" invisible="1"/>
+					<field name="user_id" invisible="1"/>
+					<field name="bw_id" invisible="1"/>
+					<field name="type" invisible="1"/>
+				</tree>
+			</field>
+		</record>
+		
+        
+        <record id="work_plan_rule_tree" model="ir.ui.view">
+			<field name="name">work.plan.rule.tree</field>
+			<field name="model">daily.record.mx</field>
+			<field name="type">tree</field>
+			<field name="priority">2</field>
+			<field name="arch" type="xml">
+				<tree string="我的常规工作" editable="top">
+					<field name="name" string="工作内容" on_change="onchange_work_type(name)"/>
+					<field name="create_date" invisible="1"/>
+					<field name="date" invisible="1"/>
+					<field name="user_id" invisible="1"/>
+					<field name="type" invisible="1"/>
+				</tree>
+			</field>
+		</record>
+		
+		<record id="work_plan_rule_manage_tree" model="ir.ui.view">
+			<field name="name">work.plan.rule.manage.tree</field>
+			<field name="model">daily.record.mx</field>
+			<field name="type">tree</field>
+			<field name="priority">1</field>
+			<field name="arch" type="xml">
+				<tree string="常规工作管理" create="false" edit="false" delete="false">
+					<field name="name" string="工作内容"/>
+					<field name="create_date" invisible="1"/>
+					<field name="date" invisible="1"/>
+					<field name="user_id" invisible="1"/>
+					<field name="type" invisible="1"/>
+				</tree>
+			</field>
+		</record>
+		
+		<record id="work_plan_form" model="ir.ui.view">
+			<field name="name">work.plan.form</field>
+			<field name="model">daily.record.mx</field>
+			<field name="type">form</field>
+			<field name="priority">0</field>
+			<field name="arch" type="xml">
+				<form string="工作计划" version="7.0" edit="false">
+					<sheet>
+						<group>
+						<h1>
+							<field name="name" string="工作计划" readonly="1"/>
+						</h1>
+						</group>
+						<group>
+							<field name="start_date" readonly="1"/>
+							<field name="end_date" readonly="1"/>
+							<field name="date" invisible="1"/>
+							<field name="user_id" invisible="1"/>
+							<field name="bw_id" invisible="1"/>
+							<field name="create_date" readonly="1"/>
+							<field name="type" readonly="1"/>
+						</group>
+					</sheet>
+				</form>
+			</field>
+		</record>
+		<!-- 工作计划管理 views tree create="false" edit="false" delete="false" -->
+		<record id="work_plan_manage_tree" model="ir.ui.view">
+			<field name="name">work.plan.manage.tree</field>
+			<field name="model">daily.record.mx</field>
+			<field name="type">tree</field>
+			<field name="priority">1</field>
+			<field name="arch" type="xml">
+				<tree string="工作计划管理" create="false" edit="false" delete="false">
+					<field name="name" string="工作计划"/>
+					<field name="start_date" required="1"/>
+					<field name="end_date" required="1"/>
+					<field name="create_date" readonly="1"/>
+					<field name="date" invisible="1"/>
+					<field name="progress"/>
+					<field name="priority"/>
+					<field name="user_id" string="计划人" invisible="1"/>
+					<field name="bw_id" invisible="1"/>
+					<field name="type" invisible="1"/>
+				</tree>
+			</field>
+		</record>
+		
+		<record id="work_plan_manage_gantt" model="ir.ui.view">
+            <field name="name">work.plan.manage.gantt</field>
+            <field name="model">daily.record.mx</field>
+            <field name="arch" type="xml">
+                <gantt date_start="start_date" date_stop="end_date" day_length="8" color="user_id" progress="progress" priority="priority" links_type="links_type" source="source" string="计划" target="target" default_group_by="user_id">
+                </gantt>
+            </field>
+        </record>
+		
+		<!-- view calendar -->
+		<record id="view_daily_record_calendar" model="ir.ui.view">
+			<field name="name">project.daily.record.calendar</field>
+			<field name="model">daily.record</field>
+			<field eval="9" name="priority" />
+			<field name="arch" type="xml">
+				<calendar color="department_id" date_start="daily_date" string="工作日志">
+					<field name="name" />
+				</calendar>
+			</field>
+		</record>
+
+		<!-- views filter -->
+		<record id="daily_record_filter" model="ir.ui.view">
+			<field name="name">daily.record.filter</field>
+			<field name="model">daily.record</field>
+			<field name="arch" type="xml">
+				<search string="日志过滤">
+					<filter name="department_filter" string="本部门的" icon="terp-personal"
+						domain="[('department_id','=','#kl_user_dept#')]" />
+					<field name="department_id" />
+					<field name="employee_id" />
+					<field name="daily_date" />
+					<field name="create_date" />
+					<filter icon="terp-go-today" string="当日日志"
+						domain="[('create_date','&lt;=',time.strftime('%%Y-%%m-%%d 23:59:59')),('daily_date','&gt;=',time.strftime('%%Y-%%m-%%d 00:00:00'))]" />
+					<filter icon="terp-go-years" string="本年日志"
+						domain="[('create_date','&gt;=',time.strftime('%%Y-1-1 00:00:00')),('daily_date','&lt;=',time.strftime('%%Y-12-31 23:59:59'))]" />
+					<kldate field="create_date" string="创建时间" type="date"/>
+					<!--昨日、本周未加 -->
+					<group expand="0" string="分组">
+						<filter name="group_department_filter" string="部门"
+							icon="terp-personal+" domain="[]" context="{'group_by':'department_id'}" />
+						<filter name="group_employee_filter" string="员工"
+							icon="terp-personal+" domain="[]" context="{'group_by':'employee_id'}" />
+						<filter name="group_date_filter" string="日期"
+							icon="terp-personal+" domain="[]" context="{'group_by':'daily_date'}" />
+					</group>
+					
+				</search>
+			</field>
+		</record>
+
+		<record id="action_daily_record" model="ir.actions.act_window">
+			<field name="name">我的工作日志</field>
+			<field name="type">ir.actions.act_window</field>
+			<field name="res_model">daily.record</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form,calendar</field>
+			<field name="view_id" ref="daily_record_tree" />
+			<field name="domain">[('create_uid','=',uid)]</field>
+			<field name="context">{}</field> <!--默认查询本部门的 -->
+		</record>
+		
+		<record id="action_work_plan" model="ir.actions.act_window">
+			<field name="name">我的工作计划</field>
+			<field name="type">ir.actions.act_window</field>
+			<field name="res_model">daily.record.mx</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,gantt</field>
+			<field name="view_id" ref="work_plan_tree" />
+			<field name="domain">[('create_uid','=',uid),('type','=','8')]</field>
+			<field name="context">{}</field>
+		</record>
+		
+		<record id="action_work_plan_tree" model="ir.actions.act_window">
+			<field name="name">我的常规工作</field>
+			<field name="type">ir.actions.act_window</field>
+			<field name="res_model">daily.record.mx</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree</field>
+			<field name="view_id" ref="work_plan_rule_tree" />
+			<field name="domain">[('create_uid','=',uid),('type','=','11')]</field>
+			<field name="context">{}</field>
+		</record>
+		
+		<record id="action_daily_record_manager" model="ir.actions.act_window">
+			<field name="name">日志管理</field>
+			<field name="type">ir.actions.act_window</field>
+			<field name="res_model">daily.record</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree_daily_record_move_line_quickadd,form,calendar</field>
+			<field name="view_id" ref="daily_record_tree" />
+			<field name="search_view_id" ref="daily_record_filter" />
+			<field name="domain">[]</field>
+			<field name="context">{}
+			</field>
+			<!-- 'search_default_group_department_filter':1 -->
+		</record>
+		
+		<record id="action_work_manage_plan" model="ir.actions.act_window">
+			<field name="name">工作计划管理</field>
+			<field name="type">ir.actions.act_window</field>
+			<field name="res_model">daily.record.mx</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,gantt</field>
+			<field name="view_id" ref="work_plan_manage_tree" />
+			<field name="domain">[('type','=','8')]</field>
+			<field name="context">{'group_by':'user_id'}</field>
+		</record>
+
+		<record id="action_work_plan_rule_manage_tree" model="ir.actions.act_window">
+			<field name="name">常规工作管理</field>
+			<field name="type">ir.actions.act_window</field>
+			<field name="res_model">daily.record.mx</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree</field>
+			<field name="view_id" ref="work_plan_rule_manage_tree" />
+			<field name="domain">[('type','=','11')]</field>
+			<field name="context">{'group_by':'user_id'}</field>
+		</record>
+
+		<!-- menuitem -->
+		<menuitem id="menu_kl_record_root" name="日志管理" sequence="45"
+			groups="daily_record.group_task_daily_record,daily_record.group_task_daily_record_manager" /><!-- 
+			groups="daily_record.group_task_daily_record,daily_record.group_task_daily_record_manager" -->
+		<menuitem name="我的工作日志" id="menu_daily_record" parent="menu_kl_record_root"
+			sequence="10" groups="daily_record.group_task_daily_record" />
+		<menuitem name="工作计划" id="menu_work_plan" parent="menu_kl_record_root"
+			sequence="20" groups="daily_record.group_task_daily_record" />
+		<menuitem name="日志管理" id="menu_daily_record_manager" parent="menu_kl_record_root"
+			sequence="50" groups="daily_record.group_task_daily_record_manager" />
+
+		<menuitem name="我的工作日志" id="menu_mydaily_record" action="action_daily_record"
+			parent="menu_daily_record" sequence="10"
+			groups="daily_record.group_task_daily_record" />
+		<menuitem name="我的工作计划" id="menu_my_work_plan" action="action_work_plan"
+			parent="menu_work_plan" sequence="10"
+			groups="daily_record.group_task_daily_record" />
+		<menuitem name="我的常规工作" id="menu_my_work_plan_tree" action="action_work_plan_tree"
+			parent="menu_work_plan" sequence="20"
+			groups="daily_record.group_task_daily_record" />
+		<menuitem name="日志管理" id="menu_all_daily_record_manager"
+			action="action_daily_record_manager" parent="menu_daily_record_manager"
+			sequence="30" groups="daily_record.group_task_daily_record_manager" />
+		<menuitem name="计划管理" id="menu_all_plan_work_manager"
+			action="action_work_manage_plan" parent="menu_daily_record_manager"
+			sequence="40" groups="daily_record.group_task_daily_record_manager" />
+		<menuitem name="常规工作管理" id="menu_all_work_plan_rule_manage"
+			action="action_work_plan_rule_manage_tree" parent="menu_daily_record_manager"
+			sequence="50" groups="daily_record.group_task_daily_record_manager" />
+	</data>
+</odoo>

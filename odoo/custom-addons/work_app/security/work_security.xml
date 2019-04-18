@@ -1,0 +1,24 @@
+<?xml version="1.0" ?>
+<odoo>
+    <record id="module_work_category" model="ir.module.category">
+        <field name="name">work</field>
+    </record>
+
+        <!-- work User Group -->
+    <record id="work_group_user" model="res.groups">
+        <field name="name">User</field>
+        <field name="category_id" ref="module_work_category" />
+        <field name="implied_ids" eval="[(4, ref('base.group_user'))]" />
+    </record>
+
+        <!-- work Manager Group -->
+    <record id="work_group_manager" model="res.groups">
+        <field name="name">Manager</field>
+        <field name="category_id" ref="module_work_category" />
+        <field name="implied_ids" eval="[(4, ref('work_group_user'))]" />
+        <field name="users" eval="[
+                    (4, ref('base.user_root')),
+                    (4, ref('base.user_admin'))
+                ]" />
+    </record>
+</odoo>
