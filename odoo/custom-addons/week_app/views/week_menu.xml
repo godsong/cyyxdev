@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<odoo>
+    <!-- week App Menu -->
+    <menuitem id="menu_week" name="工作周报" />
+
+    <!-- Action to open the week list -->
+    <act_window id="action_week_record"
+        name="工作周报"
+        res_model="week.record"
+        view_mode="tree,form"
+    />
+    <!-- Menu item to open the Book list -->
+    <menuitem id="menu_week_record"
+        name="工作周报"
+        parent="menu_week"
+        action="action_week_record"
+    />
+</odoo>

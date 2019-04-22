@@ -1,0 +1,71 @@
+<?xml version="1.0"?>
+<odoo>
+    <record id="view_form_week_record" model="ir.ui.view">
+        <field name="name">Week record Form</field>
+        <field name="model">week.record</field>
+        <field name="arch" type="xml">
+            <form string="工作周报">
+                <header>
+
+                </header>
+                <sheet>
+                    <group>
+                    <field name="name" />
+                    <field name="week_num"/>
+                    <field name="department_id" />
+                </group>
+                    <div>
+                        <separator string="工作计划"/>
+                        <field name="week_record_mx_ids">
+                            <tree editable="top">
+                                <field name="priority" string="优先级" />
+                                <field name="name" string="事项" />
+                                <field name="person_ids" widget="many2many_tags"/>
+                                <field name="date_start" string="开始时间" />
+                                <field name="date_end" string="预计结束时间" />
+                                <field name="type"/>
+                                <field name="probability" />
+                                <field name="note" />
+                                <button name="done" icon="STOCK_CONVERT" string="本周举措" type="object" />
+                                <button name="done_history" icon="gtk-indent" string="历史情况" type="object"/>
+                            </tree>
+                        </field>
+                    </div>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_tree_week_record" model="ir.ui.view">
+        <field name="name">周报列表</field>
+        <field name="model">week.record</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name" />
+                <field name="week_num" />
+                <field name="department_id" />
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_search_week_record" model="ir.ui.view">
+        <field name="name">周报过滤</field>
+        <field name="model">week.record</field>
+        <field name="arch" type="xml">
+            <search>
+            </search>
+        </field>
+    </record>
+
+        <record id="view_tree_week_record_mx" model="ir.ui.view">
+        <field name="name">事项列表</field>
+        <field name="model">week.record.mx</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="priority" />
+                <field name="probability" />
+                <field name="note" />
+            </tree>
+        </field>
+    </record>
+</odoo>

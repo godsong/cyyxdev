@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="week_list_template" name="周报列表">
+        <div id="wrap" class="container">
+            <h1>工作周报</h1>
+            <t t-foreach="weeks" t-as="week">
+                <div class="row">
+                    <span t-field="weeks.name" />,
+                    <span t-field="weeks.department_id" />,
+                    <span t-field="weeks.week_num" />
+                </div>
+            </t>
+        </div>
+    </template>
+</odoo>
