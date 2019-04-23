@@ -26,8 +26,8 @@
                                 <field name="type"/>
                                 <field name="probability" />
                                 <field name="note" />
-                                <button name="done" icon="STOCK_CONVERT" string="本周举措" type="object" />
-                                <button name="done_history" icon="gtk-indent" string="历史情况" type="object"/>
+                                <button name="done" icon="fa-plus-square" string="本周举措" type="object" />
+                                <button name="done_history" icon="fa-bars" string="历史情况" type="object"/>
                             </tree>
                         </field>
                     </div>

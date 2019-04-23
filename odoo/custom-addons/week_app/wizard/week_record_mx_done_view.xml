@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+<data>
+	<record id="view_week_record_mx_done_form" model="ir.ui.view">
+		<field name="name">本周举措</field>
+		<field name="model">week.record.mx.done</field>
+		<field name="arch" type="xml">
+			<form string="本周举措">
+			<separator string="事项" />
+			<h3>
+				<div>
+					<field name="name" readonly="1"/>
+				</div>
+			</h3>
+				<separator string="计划进度" />
+					<group>
+						<group>
+							<field name="probability"/>
+						</group>
+						<group>
+							<span>输入一个0-100之间的数字，当为100时表示计划完成</span>
+						</group>
+					</group>
+					<separator string="本周举措" />
+						<field name="note"/>
+				<footer>
+					<button name="set_to_done" string="确认" type="object"
+						default_focus="1" class="oe_highlight" />
+					or
+					<button string="取消" class="oe_link" special="cancel" />
+				</footer>
+			</form>
+		</field>
+	</record>
+
+        <record id="action_week_record_mx_done" model="ir.actions.act_window">
+            <field name="name">任务进度</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">week.record.mx.done</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+
+</data>
+</odoo>
