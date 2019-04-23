@@ -30,7 +30,12 @@ class WeekRecordMxDone(models.TransientModel):
         print(self._context)
         week_mx = self.env['week.record.mx'].browse(self.env.context.get('active_ids'))
         if self.probability <100 and self.probability != self._context.get('probability'):
-            week_mx.write({'probability':self.probability})
+            week_mx.write({'probability': self.probability})
+            print(self.note)
+            if self.note:
+                week_mx.create({'name': '计划  ' + self._context.get('name') + ' 完成' + str(self.probability)
+                                        + '%' + "\n" + u'举措：' + self.note, 'week_record_id': self._context.get('week_record_id'),
+                                'original': self._context.get('active_id'), 'type': 2})
         # if context is None:
         #     context = {}
         # data = self.read(cr, uid, ids, [], context=context)[0]
