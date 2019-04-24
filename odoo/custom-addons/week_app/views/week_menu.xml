@@ -21,4 +21,10 @@
         parent="menu_week"
         action="action_week_record_mx_group"
     />
+
+    <menuitem id="menu_week_record_mx_timeline"
+        name="工作计划甘特图"
+        parent="menu_week"
+        action="action_view_timeline_week_record_mx"
+    />
 </odoo>

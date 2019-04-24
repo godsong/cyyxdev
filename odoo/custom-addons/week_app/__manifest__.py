@@ -9,9 +9,9 @@
     'data': [
         'security/week_security.xml',
         'security/ir.model.access.csv',
-        'views/week_menu.xml',
         'views/week_record_view.xml',
         'views/week_list_template.xml',
-        'wizard/week_record_mx_done_view.xml'
+        'wizard/week_record_mx_done_view.xml',
+        'views/week_menu.xml',
     ],
 }

@@ -109,4 +109,38 @@
         <field name="domain">[('type','=','0')]</field>
         <field name="context">{'group_by':'department_id'}</field>
     </record>
+
+    <record id="view_week_record_mx_timeline" model="ir.ui.view">
+        <field name="model">week.record.mx</field>
+        <field name="type">timeline</field>
+        <field name="arch" type="xml">
+            <timeline date_start="date_start"
+                      date_stop="date_end"
+                      default_group_by="department_id"
+                      event_open_popup="true"
+                      zoomKey="ctrlKey"
+                      colors="#ec7063:department_id == false;#2ecb71:type=='0';">
+                <field name="name"/>
+                <templates>
+                    <div t-name="timeline-item">
+                        <div t-esc="record.name"/>
+                        上周进展描述：
+                        <div t-esc="record.note"/>
+                        本周举措：
+                        <span t-esc="record.new_note"/>
+                    </div>
+                </templates>
+            </timeline>
+        </field>
+    </record>
+
+        <record id="action_view_timeline_week_record_mx" model="ir.actions.act_window">
+        <field name="name">工作计划甘特图</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">week.record.mx</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">timeline</field>
+        <field name="view_id" ref="view_week_record_mx_timeline" />
+    </record>
+
 </odoo>
