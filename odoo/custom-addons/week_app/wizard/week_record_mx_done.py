@@ -2,26 +2,26 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
 from odoo import api, fields, models
-
+from odoo.exceptions import ValidationError
 
 class WeekRecordMxDone(models.TransientModel):
     _name = 'week.record.mx.done'
     _description = '本周举措'
 
-    def _check_probability(self):
-        probability = self.progress or False
+    @api.constrains('probability')
+    def _constrain_probability_valid(self):
+        probability = self.probability or False
         if probability:
             if probability > 100 or probability < 0:
-                return False
-        return True
+                raise ValidationError('%s 数据不合法错误 必须介于0-100之间' % probability)
+            elif probability < self._context.get('probability'):
+                raise ValidationError('新进度%s 应大于或等于原进度%s' % (probability, self._context.get('probability')))
+
 
     name = fields.Char('事项', required=True, default=lambda self: self._context.get('name'))
-    probability = fields.Float('进度', default=lambda self: self._context.get('probability'))
-    note = fields.Text('进展描述')
+    probability = fields.Float('进度', required=True, default=lambda self: self._context.get('probability'))
+    note = fields.Text('进展描述', required=True)
 
-    _constraints = [
-        (_check_probability, '进度必须介于0-100之间', ['计划进度'])
-    ]
 
     def set_to_done(self):
         print(self)
@@ -29,13 +29,13 @@ class WeekRecordMxDone(models.TransientModel):
         print(self._context.get('week_record_id'))
         print(self._context)
         week_mx = self.env['week.record.mx'].browse(self.env.context.get('active_ids'))
-        if self.probability <100 and self.probability != self._context.get('probability'):
-            week_mx.write({'probability': self.probability})
+        if self.probability <100:
+            week_mx.write({'probability': self.probability, 'new_note': self.note})
             print(self.note)
             if self.note:
                 week_mx.create({'name': '计划  ' + self._context.get('name') + ' 完成' + str(self.probability)
                                         + '%' + "\n" + u'举措：' + self.note, 'week_record_id': self._context.get('week_record_id'),
-                                'original': self._context.get('active_id'), 'type': 2})
+                                'original': self._context.get('active_id'), 'type': '2'})
         # if context is None:
         #     context = {}
         # data = self.read(cr, uid, ids, [], context=context)[0]

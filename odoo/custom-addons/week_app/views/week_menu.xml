@@ -15,4 +15,10 @@
         parent="menu_week"
         action="action_week_record"
     />
+
+    <menuitem id="menu_week_record_mx_group"
+        name="工作计划管理"
+        parent="menu_week"
+        action="action_week_record_mx_group"
+    />
 </odoo>

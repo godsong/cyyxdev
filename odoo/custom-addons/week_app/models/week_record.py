@@ -13,6 +13,13 @@ class week_record_mx(models.Model):
     _name = 'week.record.mx'
     _description = '周报明细'
 
+    def _get_user_department(self):
+        employee_ids = self.env['hr.employee'].search([('user_id', '=', self.env.uid)])
+        if employee_ids:
+            return employee_ids[0].department_id or False
+        else:
+            raise Warning('在人力资源中没有关联用户，请联系管理员设置')
+
     name = fields.Char('事项', required=True)
     week_record_id = fields.Many2one('week.record', string='工作周报')
     priority = fields.Selection(AVAILABLE_PRIORITIES, string='优先级', index=True,
@@ -20,9 +27,10 @@ class week_record_mx(models.Model):
     date_start = fields.Date('开始时间')
     date_end = fields.Date('结束时间')
     person_ids = fields.Many2many('hr.employee', string='责任人')
-    department_id = fields.Many2one('hr.department', string='部门')
+    department_id = fields.Many2one('hr.department', string='部门',default=_get_user_department)
     probability = fields.Float('进度', group_operator="avg")
     note = fields.Text('上周进展描述')
+    new_note = fields.Text('本周举措')
     original = fields.Integer(u'原单编号')
     type = fields.Selection([('0', '计划'),
                             ('1', '常规工作'),
@@ -76,7 +84,6 @@ class week_record(models.Model):
 
 
     def _get_name(self):
-        print(self.week_record_mx_ids.type)
         if self._get_user_department():
             self.env.cr.execute('SELECT id FROM week_record WHERE department_id = %s and week_num=%s', (self._get_user_department().id,datetime.datetime.now().isocalendar()[1]))
             vids = [x[0] for x in self.env.cr.fetchall() if x[0]]
@@ -89,11 +96,19 @@ class week_record(models.Model):
     department_id = fields.Many2one('hr.department', string='部门', default=_get_user_department)
     week_num = fields.Integer('周数', default=datetime.datetime.now().isocalendar()[1])
     week_record_mx_ids = fields.One2many('week.record.mx', 'week_record_id', string='周报明细')
-    # week_ok_mx_ids = fields.One2many('week.record.mx', 'week_record_id', string='周报明细', domain=['week_record_mx_ids[type], 'not in', ('0', '1')])
-    # week_mx_ok_ids = fields.One2many('week.record.mx', string='周报列表', compute='_week_mx_ok_ids')
-    #
-    def week_mx_ok_ids(self):
-        print(self.week_record_mx_ids.type)
-    #     print(self.week_record_mx_ids)
-    #
-    #     return self.week_record_mx_ids.search([('type', 'not in', ('2', '3')), ('week_record_id', '=', self.id)])
+    week_mx_ok_ids = fields.One2many(comodel_name='week.record.mx', string='周报列表', compute='_week_mx_ok_ids')
+
+    def _week_mx_ok_ids(self):
+        self.week_mx_ok_ids = self.week_record_mx_ids.search([('type', 'not in', ('2', '3')), ('department_id', '=', self._get_user_department().id)])
+
+    @api.model
+    def create(self, vals):
+        week = super(week_record, self).create(vals)
+        query='SELECT id FROM week_record_mx WHERE original is NULL AND new_note is NULL AND department_id= %s '
+        self.env.cr.execute(query, (self._get_user_department().id,))
+        vids = [x[0] for x in self.env.cr.fetchall() if x[0]]
+        if vids:
+            for vid in vids:
+                week_mx = self.env['week.record.mx'].browse(vid)
+                week_mx.write({'note':week_mx.new_note,'new_note':''})
+        return week
