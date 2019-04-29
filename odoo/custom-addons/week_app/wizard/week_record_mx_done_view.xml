@@ -21,8 +21,10 @@
 							<span>输入一个0-100之间的数字，当为100时表示计划完成</span>
 						</group>
 					</group>
-					<separator string="本周举措" />
-						<field name="note"/>
+				<separator string="进展描述" />
+					<field name="note"/>
+				<separator string="本周举措" />
+						<field name="new_note"/>
 				<footer>
 					<button name="set_to_done" string="确认" type="object"
 						default_focus="1" class="oe_highlight" />

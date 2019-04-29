@@ -104,14 +104,16 @@ class week_record(models.Model):
     def _week_mx_ok_ids(self):
         self.week_mx_ok_ids = self.week_record_mx_ids.search([('type', 'not in', ('2', '3')), ('department_id', '=', self._get_user_department().id)])
 
-    @api.model
-    def create(self, vals):
-        week = super(week_record, self).create(vals)
-        query='SELECT id FROM week_record_mx WHERE original is NULL AND new_note is NULL AND department_id= %s '
-        self.env.cr.execute(query, (self._get_user_department().id,))
-        vids = [x[0] for x in self.env.cr.fetchall() if x[0]]
-        if vids:
-            for vid in vids:
-                week_mx = self.env['week.record.mx'].browse(vid)
-                week_mx.write({'note':week_mx.new_note,'new_note':''})
-        return week
+    @api.multi
+    def new_week_mx(self):
+        return {
+            'name': '新增计划',
+            'view_type': 'form',
+            'view_mode': 'form',
+            'res_model': 'week.record.mx',
+            'type': 'ir.actions.act_window',
+            'view_id': False,
+            'nodestroy': True,
+            'target': 'new',
+        }
+
