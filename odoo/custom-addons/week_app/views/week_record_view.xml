@@ -5,6 +5,7 @@
         <field name="model">week.record</field>
         <field name="arch" type="xml">
             <form string="工作周报">
+                <sheet>
                     <group>
                         <div class="oe_title">
                             <h1><field name="name" readonly="1"/></h1>
@@ -40,6 +41,12 @@
                             <field name="new_note" />
                         </tree>
                     </field>
+                </div>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="activity_ids" widget="mail_activity"/>
+                    <field name="message_ids" widget="mail_thread" options="{'post_refresh': 'recipients'}"/>
                 </div>
             </form>
         </field>
@@ -119,15 +126,12 @@
                       default_group_by="department_id"
                       event_open_popup="true"
                       zoomKey="ctrlKey"
-                      colors="#ec7063:department_id == false;#2ecb71:type=='0';">
+                      colors="#ec7063:department_id == false;#2ecb71:type=='0';"
+                      dependency_arrow="original_ids">
                 <field name="name"/>
                 <templates>
                     <div t-name="timeline-item">
                         <div t-esc="record.name"/>
-                        上周进展描述：
-                        <div t-esc="record.note"/>
-                        本周举措：
-                        <span t-esc="record.new_note"/>
                     </div>
                 </templates>
             </timeline>

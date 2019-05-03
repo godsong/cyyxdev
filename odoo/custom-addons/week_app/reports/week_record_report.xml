@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<odoo>
+    <report id="action_week_report_report"
+        string="工作周报"
+        model="week.record"
+        report_type="qweb-html"
+        name="week_app.report_week_record_template" />
+
+    <template id="report_week_record_template">
+        <t t-call="web.html_container">
+            <t t-call="web.external_layout">
+                <div class="page">
+                    <!-- Report header content -->/
+                    <t t-foreach="docs" t-as="o">
+                        <!-- Report row content -->
+                    </t>
+                    <!-- Report footer content -->
+                </div>
+            </t>
+        </t>
+    </template>
+
+</odoo>

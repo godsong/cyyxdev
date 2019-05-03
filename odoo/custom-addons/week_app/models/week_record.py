@@ -32,11 +32,13 @@ class week_record_mx(models.Model):
     note = fields.Text('上周进展描述')
     new_note = fields.Text('本周举措')
     original = fields.Integer(u'原单编号')
+    original_ids = fields.One2many('week.record.mx', 'original', string='举措明细')
     type = fields.Selection([('0', '计划'),
                             ('1', '常规工作'),
                             ('2', '计划进行'),
                             ('3', '完成'),
                             ], '类型', default='0')
+
     @api.multi
     def done_history(self):
         self.env.cr.execute('SELECT id FROM week_record_mx WHERE original = %s', (self.id,))
@@ -55,7 +57,7 @@ class week_record_mx(models.Model):
                 }
             return action
         else:
-            raise Warning('没有历史数据')
+            raise Warning('没有历史记录')
     @api.multi
     def done(self):
         return {
@@ -74,6 +76,7 @@ class week_record_mx(models.Model):
 class week_record(models.Model):
     _name = 'week.record'
     _description = '工作周报'
+    _inherit = ['mail.thread', 'mail.activity.mixin']
 
     def _get_user_department(self):
         employee_ids = self.env['hr.employee'].search([('user_id', '=', self.env.uid)])
@@ -92,10 +95,10 @@ class week_record(models.Model):
             else:
                 raise Warning('本周已添加周报，请在周报列表中查询')
 
-    name = fields.Char('标题', default=_get_name)
+    name = fields.Char('标题', default=_get_name, track_visibility='always')
     department_id = fields.Many2one('hr.department', string='部门', default=_get_user_department)
     week_num = fields.Integer('周数', default=datetime.datetime.now().isocalendar()[1])
-    week_record_mx_ids = fields.One2many('week.record.mx', 'week_record_id', string='周报明细')
+    week_record_mx_ids = fields.One2many('week.record.mx', 'week_record_id', string='周报明细', track_visibility='always')
     week_mx_ok_ids = fields.One2many(comodel_name='week.record.mx', string='周报列表', compute='_week_mx_ok_ids')
 
     def _week_mx_ok_ids(self):

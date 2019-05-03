@@ -2,7 +2,7 @@
     'name': '城阳有线周报系统',
     'description': '城阳有线周报系统.',
     'author': 'Xiaofei Li',
-    'depends': ['base','hr'],
+    'depends': ['base','hr','mail'],
     'application': True,
     'installable': True,
 
@@ -13,5 +13,6 @@
         'views/week_list_template.xml',
         'wizard/week_record_mx_done_view.xml',
         'views/week_menu.xml',
+        'reports/week_record_report.xml'
     ],
 }
