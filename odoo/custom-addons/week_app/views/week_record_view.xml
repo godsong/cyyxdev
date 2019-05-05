@@ -7,7 +7,7 @@
             <form string="工作周报">
                 <div class="oe_button_box" name="button_box">
                     <button class="oe_stat_button" type="object"
-                        context="{'action': True}"
+                        context="{'action': 'new'}"
                         name="new_week_mx" icon="fa-plus-square">
                         <div class="o_stat_info">
                             <field name="week_num" class="o_stat_value" readonly="1"/>
@@ -120,8 +120,8 @@
                     <field name="note"/>
                     <separator string="本周举措"/>
                     <field name="new_note"/>
-                    <separator string="执行历程" invisible="not context.get('week_record_id')"/>
-                    <field name="original_ids" invisible="not context.get('week_record_id')"/>
+                    <separator string="执行历程" invisible="context.get('action','new')"/>
+                    <field name="original_ids" invisible="context.get('action','new')"/>
                 </div>
             </form>
         </field>

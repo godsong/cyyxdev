@@ -1,0 +1,107 @@
+<?xml version="1.0"?>
+<odoo>
+    <record id="view_form_week_statistical" model="ir.ui.view">
+        <field name="name">Week statistical Form</field>
+        <field name="model">week.statistical</field>
+        <field name="arch" type="xml">
+            <form string="工作周报">
+                <!--<div class="oe_button_box" name="button_box">-->
+                    <!--<button class="oe_stat_button" type="object"-->
+                        <!--context="{'action': 'new'}"-->
+                        <!--name="new_week_mx" icon="fa-plus-square">-->
+                        <!--<div class="o_stat_info">-->
+                            <!--<field name="week_num" class="o_stat_value" readonly="1"/>-->
+                            <!--<span class="o_stat_text"> 新增计划</span>-->
+                        <!--</div>-->
+                    <!--</button>-->
+                <!--</div>-->
+                    <div class="oe_title">
+                        <h1><field name="name" readonly="1"/></h1>
+                    </div>
+                    <field name="week_num" invisible="1"/>
+                <div>
+                    <separator string="及时率明细"/>
+                    <field name="week_statistical_mx_ids">
+                        <tree>
+                            <field name="name"/>
+                            <field name="person_id"/>
+                            <field name="date_start" string="开始时间"/>
+                            <field name="date_end" string="预计结束时间"/>
+                            <field name="type" invisible="1"/>
+                            <field name="duration"/>
+                            <field name="in_time"/>
+                        </tree>
+                    </field>
+                    <!--<separator string="本周新增计划"/>-->
+                    <!--<field name="week_statistical_mx_ids">-->
+                        <!--<tree editable="top">-->
+                            <!--<field name="priority" string="优先级" />-->
+                            <!--<field name="name" string="事项" />-->
+                            <!--<field name="person_ids" widget="many2many_tags" options="{'no_create_edit': True}"/>-->
+                            <!--<field name="date_start" string="开始时间" />-->
+                            <!--<field name="date_end" string="预计结束时间" />-->
+                            <!--<field name="new_note" />-->
+                        <!--</tree>-->
+                    <!--</field>-->
+                </div>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="activity_ids" widget="mail_activity"/>
+                    <field name="message_ids" widget="mail_thread" options="{'post_refresh': 'recipients'}"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_tree_week_statistical" model="ir.ui.view">
+        <field name="name">周报列表</field>
+        <field name="model">week.statistical</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name" />
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_search_week_statistical" model="ir.ui.view">
+        <field name="name">周报过滤</field>
+        <field name="model">week.statistical</field>
+        <field name="arch" type="xml">
+            <search string="Search">
+                    <field name="name"/>
+                    <field name="week_num"/>
+                    <!--<group expand='0' string='Group by...'>-->
+                        <!--<filter string='部门' name="departmentgroup" context="{'group_by': 'department_id'}"/>-->
+                    <!--</group>-->
+               </search>
+        </field>
+    </record>
+
+    <record id="view_tree_week_statistical_mx" model="ir.ui.view">
+        <field name="name">事项列表</field>
+        <field name="model">week.statistical.mx</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name" />
+                <field name="two_level"/>
+                <field name="person_id"/>
+                <field name="department_id"/>
+                <field name="type"/>
+                <field name="duration"/>
+                <field name="in_time"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_week_statistical_report_pivot" model="ir.ui.view">
+         <field name="name">week.statistical.mx.pivot</field>
+         <field name="model">week.statistical.mx</field>
+         <field name="arch" type="xml">
+             <pivot string="数据分析" disable_linking="True">
+                 <field name="person_id" type="row"/>
+                 <field name="type" type="col"/>
+                 <!--<field name="price_total" type="measure"/>-->
+             </pivot>
+         </field>
+    </record>
+</odoo>
