@@ -8,6 +8,7 @@
 
     'data': [
         'views/week_statistical_view.xml',
-        'views/week_statistical_menu.xml'
+        'views/week_statistical_menu.xml',
+        'reports/level_report.xml'
     ],
 }

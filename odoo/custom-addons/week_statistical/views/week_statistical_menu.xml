@@ -32,10 +32,17 @@
                 name="网格对照"
                 res_model="level.department"
                 view_mode="tree,form"
+                view_id="view_tree_level_department"
     />
     <menuitem id="menu_level_department"
         name="网格对照"
         parent="menu_statistical"
         action="action_level_department"
+    />
+
+    <menuitem id="menu_level_report"
+        name="报表"
+        parent="menu_statistical"
+        action="action_level_report"
     />
 </odoo>

@@ -102,8 +102,6 @@ class week_record(models.Model):
     week_mx_ok_ids = fields.One2many(comodel_name='week.record.mx', string='周报列表', compute='_week_mx_ok_ids')
 
     def _week_mx_ok_ids(self):
-        print(self.department_id.id)
-        print(self._get_user_department().id)
         self.week_mx_ok_ids = self.week_record_mx_ids.search([('type', 'not in', ('2', '3')), ('department_id', '=', self._get_user_department().id)])
 
     @api.multi
