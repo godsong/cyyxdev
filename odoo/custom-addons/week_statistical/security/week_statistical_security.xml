@@ -1,0 +1,28 @@
+<?xml version="1.0" ?>
+<odoo>
+    <record id="module_week_statistical_category" model="ir.module.category">
+        <field name="name">及时率管理</field>
+    </record>
+
+        <!-- week User Group -->
+    <record id="week_statistical_group_user" model="res.groups">
+        <field name="name">填报</field>
+        <field name="category_id" ref="module_week_statistical_category" />
+        <field name="implied_ids" eval="[(4, ref('base.group_user'))]" />
+                <field name="users" eval="[
+                    (4,ref('base.user_root')),
+                    (4, ref('base.user_admin'))
+                ]" />
+    </record>
+
+        <!-- week Manager Group -->
+    <record id="week_statistical_group_manager" model="res.groups">
+        <field name="name">管理</field>
+        <field name="category_id" ref="module_week_statistical_category" />
+        <field name="implied_ids" eval="[(4, ref('week_statistical_group_user'))]" />
+        <field name="users" eval="[
+                    (4, ref('base.user_root')),
+                    (4, ref('base.user_admin'))
+                ]" />
+    </record>
+</odoo>

@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_week_statistical_user,weekUser,model_week_statistical,week_statistical_group_user,1,1,1,1
+access_week_statistical_mx_user,weekUser,model_week_statistical_mx,week_statistical_group_user,1,1,1,1
+access_LevelToDepartment_manager,weekUser,model_level_department,week_statistical_group_user,1,1,1,1
+access_LevelToReport_manager,weekUser,model_level_report,week_statistical_group_user,1,1,1,1

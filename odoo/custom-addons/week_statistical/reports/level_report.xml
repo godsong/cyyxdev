@@ -1,10 +1,28 @@
 <?xml version="1.0"?>
 <odoo>
+    <record id="paperformat_euro_landscape"
+            model="report.paperformat">
+        <field name="name">European A4 Landscape</field>
+        <field name="default" eval="True"/>
+        <field name="format">A4</field>
+        <field name="page_height">0</field>
+        <field name="page_width">0</field>
+        <field name="orientation">Landscape</field>
+        <field name="margin_top">40</field>
+        <field name="margin_bottom">23</field>
+        <field name="margin_left">7</field>
+        <field name="margin_right">7</field>
+        <field name="header_line" eval="False"/>
+        <field name="header_spacing">35</field>
+        <field name="dpi">90</field>
+    </record>
+
     <report id="action_level_bb_report"
             string="及时率统计"
             model="week.statistical"
             report_type="qweb-html"
-            name="week_statistical.report_level_statistical_template"/>
+            name="week_statistical.report_level_statistical_template"
+            paperformat="paperformat_euro_landscape"/>
 
     <template id="report_level_statistical_template">
         <t t-call="web.html_container">
@@ -12,7 +30,13 @@
                 <style>
                     .bb{
                     text-align:center;
-                    border:1px solid #ffffff
+                    border:1px solid #ffffff;
+                    }
+                    .mm .row{
+                    margin:0;
+                    }
+                    .mm div{
+                    font-size:12px;padding:0
                     }
                 </style>
                 <div class="container">
@@ -24,10 +48,10 @@
                                 <div class="col-12 bb">安装响应</div>
                             </div>
                             <div class="row">
-                                <div class="col-3 bb" style="font-size:12px;padding:0">总数</div>
-                                <div class="col-3 bb" style="font-size:12px;padding:0">及时数</div>
-                                <div class="col-3 bb" style="font-size:12px;padding:0">及时率</div>
-                                <div class="col-3 bb" style="font-size:12px;padding:0">排名</div>
+                                <div class="col-3 bb" style="font-size:13px;padding:0">总数</div>
+                                <div class="col-3 bb" style="font-size:13px;padding:0">及时数</div>
+                                <div class="col-3 bb" style="font-size:13px;padding:0">及时率</div>
+                                <div class="col-3 bb" style="font-size:13px;padding:0">排名</div>
                             </div>
                         </div>
                         <div class="col-2 bb">
@@ -35,10 +59,10 @@
                                 <div class="col-12 bb">维修响应</div>
                             </div>
                             <div class="row">
-                                <div class="col-3 bb" style="font-size:12px;padding:0">总数</div>
-                                <div class="col-3 bb" style="font-size:12px;padding:0">及时数</div>
-                                <div class="col-3 bb" style="font-size:12px;padding:0">及时率</div>
-                                <div class="col-3 bb" style="font-size:12px;padding:0">排名</div>
+                                <div class="col-3 bb" style="font-size:13px;padding:0">总数</div>
+                                <div class="col-3 bb" style="font-size:13px;padding:0">及时数</div>
+                                <div class="col-3 bb" style="font-size:13px;padding:0">及时率</div>
+                                <div class="col-3 bb" style="font-size:13px;padding:0">排名</div>
                             </div>
                         </div>
                         <div class="col-2 bb">
@@ -46,10 +70,10 @@
                                 <div class="col-12 bb">安装回单</div>
                             </div>
                             <div class="row">
-                                <div class="col-3 bb" style="font-size:12px;padding:0">总数</div>
-                                <div class="col-3 bb" style="font-size:12px;padding:0">及时数</div>
-                                <div class="col-3 bb" style="font-size:12px;padding:0">及时率</div>
-                                <div class="col-3 bb" style="font-size:12px;padding:0">排名</div>
+                                <div class="col-3 bb" style="font-size:13px;padding:0">总数</div>
+                                <div class="col-3 bb" style="font-size:13px;padding:0">及时数</div>
+                                <div class="col-3 bb" style="font-size:13px;padding:0">及时率</div>
+                                <div class="col-3 bb" style="font-size:13px;padding:0">排名</div>
                             </div>
                         </div>
                         <div class="col-2 bb">
@@ -57,52 +81,90 @@
                                 <div class="col-12 bb">维修回单</div>
                             </div>
                             <div class="row">
-                                <div class="col-3 bb" style="font-size:12px;padding:0">总数</div>
-                                <div class="col-3 bb" style="font-size:12px;padding:0">及时数</div>
-                                <div class="col-3 bb" style="font-size:12px;padding:0">及时率</div>
-                                <div class="col-3 bb" style="font-size:12px;padding:0">排名</div>
+                                <div class="col-3 bb" style="font-size:13px;padding:0">总数</div>
+                                <div class="col-3 bb" style="font-size:13px;padding:0">及时数</div>
+                                <div class="col-3 bb" style="font-size:13px;padding:0">及时率</div>
+                                <div class="col-3 bb" style="font-size:13px;padding:0">排名</div>
                             </div>
                         </div>
                         <div class="col-2 bb">综合排名</div>
                     </div>
-                    <t t-foreach="docs" t-as="o">
-                        <div class="row">
-                        <div class="col-1">运维队</div>
-                        <div class="col-1">姓名</div>
-                        <div class="col-2">
-                            <div class="row">
-                                <div class="col-3">总数</div>
-                                <div class="col-3">及时数</div>
-                                <div class="col-3">及时率</div>
-                                <div class="col-3">排名</div>
+                    <t t-foreach="docs.level_reports" t-as="o">
+                        <div class="row mm">
+                            <div class="col-1 bb">
+                                <span t-field="o.department_id"/>
+                            </div>
+                            <div class="col-1 bb">
+                                <span t-field="o.person_id"/>
+                            </div>
+                            <div class="col-2 bb">
+                                <div class="row">
+                                    <div class="col-3 bb">
+                                        <span t-field="o.azxy_sum"/>
+                                    </div>
+                                    <div class="col-3 bb">
+                                        <span t-field="o.azxy_js"/>
+                                    </div>
+                                    <div class="col-3 bb">
+                                        <span t-field="o.azxy_time"/><font style="font-size:8px">%</font>
+                                    </div>
+                                    <div class="col-3 bb text-primary">
+                                        <span t-field="o.azxy_pm"/>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-2 bb">
+                                <div class="row">
+                                    <div class="col-3 bb">
+                                        <span t-field="o.wxxy_sum"/>
+                                    </div>
+                                    <div class="col-3 bb">
+                                        <span t-field="o.wxxy_js"/>
+                                    </div>
+                                    <div class="col-3 bb">
+                                        <span t-field="o.wxxy_time"/><font style="font-size:8px">%</font>
+                                    </div>
+                                    <div class="col-3 bb text-primary">
+                                        <span t-field="o.wxxy_pm"/>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-2 bb">
+                                <div class="row">
+                                    <div class="col-3 bb">
+                                        <span t-field="o.azhd_sum"/>
+                                    </div>
+                                    <div class="col-3 bb">
+                                        <span t-field="o.azhd_js"/>
+                                    </div>
+                                    <div class="col-3 bb">
+                                        <span t-field="o.azhd_time"/><font style="font-size:8px">%</font>
+                                    </div>
+                                    <div class="col-3 bb">
+                                        <span t-field="o.azhd_pm"/>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-2 bb">
+                                <div class="row">
+                                    <div class="col-3 bb">
+                                        <span t-field="o.wxhd_sum"/>
+                                    </div>
+                                    <div class="col-3 bb">
+                                        <span t-field="o.wxhd_js"/>
+                                    </div>
+                                    <div class="col-3 bb">
+                                        <span t-field="o.wxhd_time"/><font style="font-size:8px">%</font>
+                                    </div>
+                                    <div class="col-3 bb">
+                                        <span t-field="o.wxhd_pm"/>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-2 bb">
+                                <span t-field="o.zh_pm"/>
                             </div>
                         </div>
-                        <div class="col-2">
-                            <div class="row">
-                                <div class="col-3">总数</div>
-                                <div class="col-3">及时数</div>
-                                <div class="col-3">及时率</div>
-                                <div class="col-3">排名</div>
-                            </div>
-                        </div>
-                        <div class="col-2">
-                            <div class="row">
-                                <div class="col-3">总数</div>
-                                <div class="col-3">及时数</div>
-                                <div class="col-3">及时率</div>
-                                <div class="col-3">排名</div>
-                            </div>
-                        </div>
-                        <div class="col-2">
-                            <div class="row">
-                                <div class="col-3">总数</div>
-                                <div class="col-3">及时数</div>
-                                <div class="col-3">及时率</div>
-                                <div class="col-3">排名</div>
-                            </div>
-                        </div>
-                        <div class="col-2">综合排名</div>
-                    </div>
                     </t>
                     <!-- Report footer content -->
                 </div>

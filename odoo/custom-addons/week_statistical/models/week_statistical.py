@@ -32,7 +32,6 @@ class week_statistical_mx(models.Model):
 class week_statistical(models.Model):
     _name = 'week.statistical'
     _description = '及时率明细表'
-    _inherit = ['mail.thread', 'mail.activity.mixin']
 
     def _get_name(self):
         self.env.cr.execute('SELECT id FROM week_statistical WHERE week_num=%s', (datetime.datetime.now().isocalendar()[1],))
@@ -42,9 +41,10 @@ class week_statistical(models.Model):
         else:
             raise Warning('本周已添加周报，请在周报列表中查询')
 
-    name = fields.Char('标题', default=_get_name, track_visibility='always')
+    name = fields.Char('标题', default=_get_name)
     week_num = fields.Integer('周数', default=datetime.datetime.now().isocalendar()[1])
-    week_statistical_mx_ids = fields.One2many('week.statistical.mx', 'week_statistical_id', string='周报明细', track_visibility='always')
+    week_statistical_mx_ids = fields.One2many('week.statistical.mx', 'week_statistical_id', string='周报明细')
+    level_reports = fields.One2many('level.report', 'week_statistical_id', string='报告明细')
 
     def level_report(self):
         person = []
@@ -77,12 +77,20 @@ class week_statistical(models.Model):
                     wxhd_js = len(sataistical_mx.search([('person_id', '=', per), ('type', '=', 2),('in_time','=',True)]))
                     if azxy_sum > 0:
                         azxy_time = azxy_js/azxy_sum*100
+                    else:
+                        azxy_time = 100
                     if azhd_sum > 0:
                         azhd_time = azhd_js/azhd_sum*100
+                    else:
+                        azhd_time = 100
                     if wxxy_sum > 0:
                         wxxy_time = wxxy_js/wxxy_sum*100
+                    else:
+                        wxxy_time = 100
                     if wxhd_sum > 0:
                         wxhd_time = wxhd_js/wxhd_sum*100
+                    else:
+                        wxhd_time = 100
                     two_level = sataistical_mx.search([('person_id','=',per)])[0].two_level
                     if self.env['level.department'].search([('two_level','=',two_level)]):
                         department_id = self.env['level.department'].search([('two_level','=',two_level)])[0].department_id.id
@@ -189,8 +197,6 @@ class week_statistical(models.Model):
             report.unlink()
             self.level_report()
 
-
-
 class LevelToDepartment(models.Model):
     _name = 'level.department'
     _description = '部门对照'
@@ -207,22 +213,22 @@ class LevelToReport(models.Model):
     person_id = fields.Many2one('hr.employee', string='回单人')
     two_level = fields.Char('二级网格')
     department_id = fields.Many2one('hr.department', string='部门')
-    azxy_sum = fields.Float('安装响应总数')
-    azxy_js = fields.Float('安装响应及时数')
-    azxy_time = fields.Float('安装响应及时率', group_operator="avg")
+    azxy_sum = fields.Integer('安装响应总数')
+    azxy_js = fields.Integer('安装响应及时数')
+    azxy_time = fields.Float('安装响应及时率', digits=(16, 2), group_operator="avg")
     azxy_pm = fields.Integer('安装响应排名', group_operator="avg")
-    wxxy_sum = fields.Float('维修响应总数')
-    wxxy_js = fields.Float('维修响应及时数')
-    wxxy_time = fields.Float('维修响应及时率', group_operator="avg")
+    wxxy_sum = fields.Integer('维修响应总数')
+    wxxy_js = fields.Integer('维修响应及时数')
+    wxxy_time = fields.Float('维修响应及时率', digits=(16, 2), group_operator="avg")
     wxxy_pm = fields.Integer('维修响应排名', group_operator="avg")
-    azhd_sum = fields.Float('安装回单总数')
-    azhd_js = fields.Float('安装回单及时数')
-    azhd_time = fields.Float('安装回单及时率', group_operator="avg")
+    azhd_sum = fields.Integer('安装回单总数')
+    azhd_js = fields.Integer('安装回单及时数')
+    azhd_time = fields.Float('安装回单及时率', digits=(16, 2), group_operator="avg")
     azhd_pm = fields.Integer('安装回单排名', group_operator="avg")
-    wxhd_sum = fields.Float('维修回单总数')
-    wxhd_js = fields.Float('维修回单及时数')
-    wxhd_time = fields.Float('维修回单及时率', group_operator="avg")
+    wxhd_sum = fields.Integer('维修回单总数')
+    wxhd_js = fields.Integer('维修回单及时数')
+    wxhd_time = fields.Float('维修回单及时率', digits=(16, 2), group_operator="avg")
     wxhd_pm = fields.Integer('维修回单排名', group_operator="avg")
-    zh_sum = fields.Float('名次合计')
+    zh_sum = fields.Integer('名次合计')
     zh_pm = fields.Integer('综合排名', group_operator="avg")
     is_pm = fields.Boolean('是否排名',default=True)
