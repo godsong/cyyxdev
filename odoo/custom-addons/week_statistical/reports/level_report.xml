@@ -20,7 +20,7 @@
     <report id="action_level_bb_report"
             string="及时率统计"
             model="week.statistical"
-            report_type="qweb-html"
+            report_type="qweb-pdf"
             name="week_statistical.report_level_statistical_template"
             paperformat="paperformat_euro_landscape"/>
 
