@@ -1,5 +1,0 @@
-id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_daily_record,daily_record.task_daily_record,model_daily_record,group_task_daily_record,1,1,1,1
-access_daily_record_manager,daily_record.task_daily_record_manager,model_daily_record,group_task_daily_record_manager,1,1,1,1
-access_daily_record_mx,daily_record_mx.task_daily_record,model_daily_record_mx,group_task_daily_record,1,1,1,1
-access_daily_record_mx_manager,daily_recordmx.task_daily_record_manager,model_daily_record_mx,group_task_daily_record_manager,1,1,1,1
