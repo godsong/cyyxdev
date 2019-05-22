@@ -29,8 +29,8 @@ class week_record_mx(models.Model):
     person_ids = fields.Many2many('hr.employee', string='责任人')
     department_id = fields.Many2one('hr.department', string='部门',default=_get_user_department)
     probability = fields.Float('进度', group_operator="avg")
-    note = fields.Text('上周进展描述')
-    new_note = fields.Text('本周举措')
+    note = fields.Char('上周进展描述')
+    new_note = fields.Char('本周举措')
     original = fields.Integer(u'原单编号')
     original_ids = fields.One2many('week.record.mx', 'original', string='举措明细')
     type = fields.Selection([('0', '计划'),
@@ -102,7 +102,8 @@ class week_record(models.Model):
     week_mx_ok_ids = fields.One2many(comodel_name='week.record.mx', string='周报列表', compute='_week_mx_ok_ids')
 
     def _week_mx_ok_ids(self):
-        self.week_mx_ok_ids = self.week_record_mx_ids.search([('type', 'not in', ('2', '3')), ('department_id', '=', self._get_user_department().id)])
+        if self.department_id:
+            self.week_mx_ok_ids = self.week_record_mx_ids.search([('type', 'not in', ('2', '3')), ('department_id', '=', self.department_id.id)])
 
     @api.multi
     def new_week_mx(self):
@@ -113,6 +114,7 @@ class week_record(models.Model):
             'res_model': 'week.record.mx',
             'type': 'ir.actions.act_window',
             'view_id': False,
+            'context':{'default_week_record_id': self.id,'default_type':'0'},
             'nodestroy': True,
             'target': 'new',
         }

@@ -32,13 +32,13 @@ class WeekRecordMxDone(models.TransientModel):
         week_mx.write({'probability': self.probability, 'note': self.note, 'new_note': self.new_note})
         if self.probability <100:
             week_mx.create({'name': ' 完成' + str(self.probability) + '%' + '  进展：' + self.note + '  举措：' + self.new_note,
-                            'week_record_id': self._context.get('week_record_id'),
+
                             'original': self._context.get('active_id'), 'date_start': date_start, 'date_end': date_end,
                             'type': '2'})
         if self.probability == 100:
             week_mx.write({'type': '3'})
             week_mx.create({'name': ' 完成' + str(self.probability) + '%' + '  进展：' + self.note + '  举措：' + self.new_note,
-                            'week_record_id': self._context.get('week_record_id'),
+
                             'original': self._context.get('active_id'), 'date_start': date_start, 'date_end': date_end,
                             'type': '3'})
 
