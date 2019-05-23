@@ -2,7 +2,6 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
 from odoo import api, fields, models
-import datetime
 from odoo.exceptions import ValidationError
 
 class WeekRecordMxDone(models.TransientModel):
@@ -25,22 +24,9 @@ class WeekRecordMxDone(models.TransientModel):
 
     def set_to_done(self):
         week_mx = self.env['week.record.mx'].browse(self.env.context.get('active_ids'))
-        week_num = datetime.datetime.now().isocalendar()[2]
-        today = datetime.date.today()
-        date_start = today - datetime.timedelta(week_num-1)
-        date_end = today + datetime.timedelta(7-week_num)
         week_mx.write({'probability': self.probability, 'note': self.note, 'new_note': self.new_note})
-        if self.probability <100:
-            week_mx.create({'name': ' 完成' + str(self.probability) + '%' + '  进展：' + self.note + '  举措：' + self.new_note,
-
-                            'original': self._context.get('active_id'), 'date_start': date_start, 'date_end': date_end,
-                            'type': '2'})
         if self.probability == 100:
-            week_mx.write({'type': '3'})
-            week_mx.create({'name': ' 完成' + str(self.probability) + '%' + '  进展：' + self.note + '  举措：' + self.new_note,
-
-                            'original': self._context.get('active_id'), 'date_start': date_start, 'date_end': date_end,
-                            'type': '3'})
+            week_mx.write({'state': '3'})
 
 
 

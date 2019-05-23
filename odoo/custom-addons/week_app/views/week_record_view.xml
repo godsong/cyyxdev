@@ -40,15 +40,21 @@
         <field name="name">Week record Form</field>
         <field name="model">week.record</field>
         <field name="arch" type="xml">
-            <form string="工作周报">
+            <form string="工作周报" edit='false'>
                 <sheet>
                     <div class="oe_button_box" name="button_box">
                         <button class="oe_stat_button" type="object"
-                                context="{'action': 'new'}"
                                 name="new_week_mx" icon="fa-plus-square">
                             <div class="o_stat_info">
                                 <field name="week_num" class="o_stat_value" readonly="1"/>
                                 <span class="o_stat_text">新增计划</span>
+                            </div>
+                        </button>
+                        <button class="oe_stat_button" type="object"
+                                name="get_week_mx" icon="fa-plus-square">
+                            <div class="o_stat_info">
+                                <field name="week_num" class="o_stat_value" readonly="1"/>
+                                <span class="o_stat_text">导入计划</span>
                             </div>
                         </button>
                     </div>
@@ -66,20 +72,23 @@
                                 name="week_record_mx_ids"
                                 widget="section_and_note_one2many"
                                 mode="tree,kanban"
-                                domain="[]"
                         >
-                            <tree>
+                            <tree decoration-success="type=='0'">
                                 <field name="priority" string="优先级"/>
                                 <field name="name" string="事项"/>
                                 <field name="person_ids" widget="many2many_tags" options="{'no_create_edit': True}"/>
                                 <field name="date_start" string="开始时间"/>
                                 <field name="date_end" string="预计结束时间"/>
                                 <field name="type" invisible="1"/>
+                                <field name="state" invisible="1"/>
                                 <field name="probability"/>
                                 <field name="note"/>
                                 <field name="new_note"/>
                                 <button name="done" icon="fa-plus-square" string="本周举措" type="object"/>
-                                <button name="done_history" icon="fa-bars" string="历史情况" type="object"/>
+                                <button name="done_history" icon="fa-bars" string="历史情况" type="object"
+                                        groups="week_app.week_group_manager"/>
+                                <button name="remove" icon="fa-trash" string="删除" type="object"
+                                        attrs="{'invisible': [('state', '!=', '0')]}"/>
                             </tree>
                             <kanban class="o_kanban_mobile">
                                 <field name="name"/>
@@ -108,10 +117,10 @@
                                                 </div>
                                             </div>
                                             <div class="row">
-                                                <div class="col-12 text-muted" style="text-overflow: ellipsis; overflow: hidden; white-space: nowrap;">
+                                                <div class="col-12 text-muted">
                                                     <span>
                                                         上周进展:
-                                                            <t t-esc="record.note.value"/>
+                                                        <t t-esc="record.note.value"/>
                                                     </span>
                                                 </div>
                                             </div>
@@ -124,9 +133,9 @@
                                                 </div>
                                             </div>
                                             <!--<div class="oe_kanban_bottom_right">-->
-                                                <!--<img t-att-src="kanban_image('res.users', 'image_small', record.user_id.raw_value)"-->
-                                                     <!--t-att-title="record.user_id.value" t-att-alt="record.user_id.value"-->
-                                                     <!--width="24" height="24" class="oe_kanban_avatar float-right"/>-->
+                                            <!--<img t-att-src="kanban_image('res.users', 'image_small', record.user_id.raw_value)"-->
+                                            <!--t-att-title="record.user_id.value" t-att-alt="record.user_id.value"-->
+                                            <!--width="24" height="24" class="oe_kanban_avatar float-right"/>-->
                                             <!--</div>-->
                                         </div>
                                     </t>
@@ -194,6 +203,18 @@
         </field>
     </record>
 
+    <record id="view_tree_week_record_history" model="ir.ui.view">
+        <field name="name">进度历程</field>
+        <field name="model">week.record.mx</field>
+        <field name="arch" type="xml">
+            <tree edit='false'>
+                <field name="create_date" string="创建时间"/>
+                <field name="note" string="进展描述"/>
+                <field name="new_note" string="举措"/>
+            </tree>
+        </field>
+    </record>
+
     <record id="view_form_week_record_mx" model="ir.ui.view">
         <field name="name">工作事项</field>
         <field name="model">week.record.mx</field>
@@ -221,8 +242,8 @@
                     <field name="note"/>
                     <separator string="本周举措"/>
                     <field name="new_note"/>
-                    <separator string="执行历程" invisible="context.get('action','new')"/>
-                    <field name="original_ids" invisible="context.get('action','new')"/>
+                    <!--<separator string="执行历程"/>-->
+                    <!--<field name="original_ids"/>-->
                 </div>
             </form>
         </field>

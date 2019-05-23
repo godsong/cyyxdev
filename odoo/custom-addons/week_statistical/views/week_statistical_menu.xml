@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <odoo>
     <!-- week App Menu -->
-    <menuitem id="menu_statistical" name="及时率管理" />
+    <menuitem id="menu_statistical" name="及时率管理" web_icon="sale_management,static/description/icon.png"/>
 
     <!-- Action to open the week list -->
     <act_window id="action_week_statistical"
